@@ -1,0 +1,30 @@
+cabal-version:      2.4
+name:               rio-registration
+version:            0.1.0.0
+
+executable rio-registration
+    main-is:          Main.hs
+    other-modules:    Timestamp, TimestampAccess, Rio
+
+    -- LANGUAGE extensions used by modules in this package.
+    -- other-extensions:
+    build-depends:
+      base ^>=4.14.3.0,
+      time ^>=1.9.3,
+      servant-server ^>=0.19.1,
+      aeson,
+      warp,
+      web3 ^>=1.0.0.0,
+      web3-ethereum ^>=1.0.0.0,
+      web3-provider,
+      web3-solidity,
+      microlens,
+      cryptonite,
+      memory,
+      bytestring,
+      uuid-types,
+      config-ini ^>=0.2.5.0,
+      text
+    hs-source-dirs:   app
+    default-language: Haskell2010
+    ghc-options: -O -Wall -Wredundant-constraints -Wincomplete-uni-patterns -Wincomplete-record-updates -fno-show-valid-hole-fits
