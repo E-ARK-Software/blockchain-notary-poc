@@ -14,9 +14,9 @@
 
        geth account new
 
-3. create a genesis block with `puppeth` with the configuration:
+3. create a genesis block (https://geth.ethereum.org/docs/fundamentals/private-network#clique-example) with the configuration:
     - clique (Proof-of-Authority)
-    - prefunding the account created in the previous step and setting it as sealer
+    - prefunding the account created in the previous step with 1000000000000000000000 Wei (= 1000 Ether) and setting it as sealer
 
 4. initialise chain with genesis block
 
@@ -26,7 +26,7 @@
 
 6. start node
     
-       geth --allow-insecure-unlock --http --nodiscover --unlock $address --password $password_file --mine
+       geth --allow-insecure-unlock --http --nodiscover --unlock $address --password $password_file --mine --miner.etherbase 0x$address
 
 
 ## Installation
@@ -35,7 +35,7 @@
 
 2. deploy the smart contract
 
-       geth js timestamp/deploy_web3_0.20.js
+       geth --unlock $address --password $password_file --miner.etherbase 0x$address --exec "loadScript('timestamp/deploy_web3_0.20.js');" console
 
 3. add the address of the smart contract in `config.ini`
 
