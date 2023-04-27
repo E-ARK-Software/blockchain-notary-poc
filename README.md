@@ -4,7 +4,7 @@
 
 * GHC 8.10.x
 * Cabal
-* Go Ethereum 1.10.x
+* Go Ethereum 1.11.x
 
 ## Quick Instructions for Running a Single Node Ethereum Private Network
 
