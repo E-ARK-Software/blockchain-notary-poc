@@ -19,6 +19,7 @@ import Data.Ini.Config
 import Data.Text (pack)
 import Data.UUID.Types (fromString, UUID)
 import Network.Wai.Handler.Warp (run)
+import Network.Wai.Middleware.Cors (simpleCors)
 import Servant
 
 import Rio
@@ -117,7 +118,7 @@ rioAPI :: Proxy RioAPI
 rioAPI = Proxy
 
 app :: Config -> Application
-app = serve rioAPI . server
+app = simpleCors . serve rioAPI . server
 
 main :: IO ()
 main = do
