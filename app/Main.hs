@@ -21,7 +21,7 @@ import Data.UUID.Types (fromString, UUID)
 import Network.Wai
 import Network.Wai.Handler.Warp
     ( setLogger, setPort, runSettings, defaultSettings )
-import Network.Wai.Middleware.Cors (simpleCors)
+import Network.Wai.Middleware.Cors (CorsResourcePolicy (..), simpleMethods, cors)
 import Servant
 import System.IO
 import Network.Wai.Logger ( withStdoutLogger )
@@ -122,7 +122,7 @@ rioAPI :: Proxy RioAPI
 rioAPI = Proxy
 
 app :: Config -> Application
-app = logAllMiddleware . simpleCors . serve rioAPI . server
+app = logAllMiddleware . customCors . serve rioAPI . server
 
 logAllMiddleware :: Application -> Request -> (Response -> IO ResponseReceived) -> IO ResponseReceived
 logAllMiddleware a req r = do
@@ -131,6 +131,21 @@ logAllMiddleware a req r = do
     print $ requestHeaders req
     hFlush stdout
     a req r
+
+customCors :: Middleware
+customCors = cors (const $ Just customCorsResourcePolicy)
+
+customCorsResourcePolicy :: CorsResourcePolicy
+customCorsResourcePolicy = CorsResourcePolicy
+    { corsOrigins = Nothing
+    , corsMethods = simpleMethods
+    , corsRequestHeaders = ["Content-Type"]
+    , corsExposedHeaders = Nothing
+    , corsMaxAge = Nothing
+    , corsVaryOrigin = False
+    , corsRequireOrigin = False
+    , corsIgnoreFailures = False
+    }
 
 main :: IO ()
 main = do
