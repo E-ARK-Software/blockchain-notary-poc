@@ -23,6 +23,7 @@ import Network.Wai.Handler.Warp
     ( setLogger, setPort, runSettings, defaultSettings )
 import Network.Wai.Middleware.Cors (simpleCors)
 import Servant
+import System.IO
 import Network.Wai.Logger ( withStdoutLogger )
 
 import Rio
@@ -128,6 +129,7 @@ logAllMiddleware a req r = do
     print $ requestMethod req
     print $ rawPathInfo req
     print $ requestHeaders req
+    hFlush stdout
     a req r
 
 main :: IO ()
