@@ -18,9 +18,12 @@ import qualified Data.ByteString.Char8 as C8
 import Data.Ini.Config
 import Data.Text (pack)
 import Data.UUID.Types (fromString, UUID)
-import Network.Wai.Handler.Warp (run)
+import Network.Wai
+import Network.Wai.Handler.Warp
+    ( setLogger, setPort, runSettings, defaultSettings )
 import Network.Wai.Middleware.Cors (simpleCors)
 import Servant
+import Network.Wai.Logger ( withStdoutLogger )
 
 import Rio
 import TimestampAccess (TimestampInfo(TimestampInfo))
@@ -118,9 +121,19 @@ rioAPI :: Proxy RioAPI
 rioAPI = Proxy
 
 app :: Config -> Application
-app = simpleCors . serve rioAPI . server
+app = logAllMiddleware . simpleCors . serve rioAPI . server
+
+logAllMiddleware :: Application -> Request -> (Response -> IO ResponseReceived) -> IO ResponseReceived
+logAllMiddleware a req r = do
+    print $ requestMethod req
+    print $ rawPathInfo req
+    print $ requestHeaders req
+    a req r
 
 main :: IO ()
 main = do
   configFile <- pack <$> readFile "config.ini"
-  either putStrLn (\c -> run (port c) $ app c) $ parseIniFile configFile configParser
+  either putStrLn (\c -> runWithLogger (port c) $ app c) $ parseIniFile configFile configParser
+  where
+    runWithLogger p a = withStdoutLogger $ \logger ->
+      runSettings (setPort p $ setLogger logger defaultSettings) a
